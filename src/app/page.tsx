@@ -11,7 +11,7 @@ export default function Home() {
     <div className="flex h-screen bg-gray-900 text-white">
       <Leftbar />
       <div className="flex-1 flex flex-col">
-        <FlowChart selectedFlow={selectedFlow} />
+        <FlowChart />
       </div>
       <Sidebar selectedFlow={selectedFlow} setSelectedFlow={setSelectedFlow} />
     </div>

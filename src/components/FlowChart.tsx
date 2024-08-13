@@ -1,14 +1,12 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import "@xyflow/react/dist/style.css";
 import { useQuery } from "@tanstack/react-query";
 import { getGraph, GraphNode } from "@/lib/api";
 import {
-  addEdge,
   Background,
   BackgroundVariant,
-  Connection,
   ConnectionLineType,
   Edge,
   MarkerType,
@@ -40,9 +38,9 @@ const nodeTypes = {
   custom: CustomNode,
 };
 
-interface FlowChartProps {
-  selectedFlow: string;
-}
+// interface FlowChartProps {
+//   selectedFlow: string;
+// }
 const BtnComp = () => {
   return (
     <button className="bg-[#F27400] shadow-sm hover:bg-[#dc7310] text-white py-2 px-4 rounded">
@@ -51,7 +49,7 @@ const BtnComp = () => {
   );
 };
 
-export default function FlowChart({ selectedFlow }: FlowChartProps) {
+export default function FlowChart() {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node<NodeData>>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge<any>>([]);
 
@@ -64,12 +62,12 @@ export default function FlowChart({ selectedFlow }: FlowChartProps) {
   //   setEdges((eds) => addEdge(edge, eds));
   // }, []);
 
-  const { data: graphData } = useQuery({
+  const { data: graphData, isLoading } = useQuery({
     queryKey: ["graph"],
-    queryFn: () => getGraph(selectedFlow),
+    queryFn: () => getGraph(),
   });
 
-  useMemo(() => {
+  useEffect(() => {
     if (graphData) {
       const newNodes: Node<NodeData>[] = [];
       const newEdges: Edge<any>[] = [];
@@ -125,7 +123,7 @@ export default function FlowChart({ selectedFlow }: FlowChartProps) {
 
   const proOptions = { hideAttribution: true };
 
-  if (!graphData)
+  if (isLoading)
     return (
       <div className="flex flex-col justify-center items-center h-full w-full">
         <Loader2 className="animate-spin size-9 mb-3" />

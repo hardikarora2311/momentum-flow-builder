@@ -12,7 +12,7 @@ export interface GraphNode {
   children: GraphNode[];
 }
 
-export const getGraph = async (flow: string): Promise<GraphNode[]> => {
+export const getGraph = async (): Promise<GraphNode[]> => {
   const response = await api.get("/graph");
   return response.data;
 };
