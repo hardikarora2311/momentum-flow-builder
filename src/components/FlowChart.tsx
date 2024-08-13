@@ -21,6 +21,7 @@ import {
 import CustomNode from "./CustomNode";
 import Topbar from "./Topbar";
 import Bottombar from "./Bottombar";
+import { Loader2 } from "lucide-react";
 
 interface NodeData extends Record<string, unknown> {
   label: string;
@@ -126,8 +127,9 @@ export default function FlowChart({ selectedFlow }: FlowChartProps) {
 
   if (!graphData)
     return (
-      <div className="flex justify-center items-center h-full w-full">
-        Loading...
+      <div className="flex flex-col justify-center items-center h-full w-full">
+        <Loader2 className="animate-spin size-9 mb-3" />
+        <h3>Getting Workflow...</h3>
       </div>
     );
 
