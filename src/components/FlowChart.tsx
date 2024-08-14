@@ -31,7 +31,7 @@ interface NodeData extends Record<string, unknown> {
 const initialViewport = {
   zoom: 0.7,
   x: 200,
-  y: 400,
+  y: -600,
 };
 
 const nodeTypes = {
@@ -73,16 +73,36 @@ export default function FlowChart() {
       const newEdges: Edge<any>[] = [];
       const levelWidth = 300;
       const nodeHeight = 200;
-      const nodeWidth = 200;
+      const nodeWidth = 300;
+      const verticalSpacing = 100; // Vertical space between nodes
+
+      // const calculateTotalHeight = (node: GraphNode): number => {
+      //   if (node.children.length === 0) return nodeHeight;
+      //   return node.children.reduce(
+      //     (total, child) => total + calculateTotalHeight(child),
+      //     0
+      //   );
+      // };
+      const calculateTotalHeight = (node: GraphNode): number => {
+        if (node.children.length === 0) return nodeHeight;
+        return (
+          node.children.reduce(
+            (total, child) => total + calculateTotalHeight(child),
+            0
+          ) +
+          (node.children.length - 1) * verticalSpacing
+        );
+      };
 
       const processNode = (
         node: GraphNode,
         level: number,
-        index: number,
-        totalSiblings: number
-      ) => {
+        startY: number
+      ): number => {
         const x = level * (levelWidth + nodeWidth);
-        const y = (index - (totalSiblings - 1) / 2) * nodeHeight * 1.5;
+        const totalHeight = calculateTotalHeight(node);
+        const y = startY + totalHeight / 2 - nodeHeight / 2;
+
         newNodes.push({
           id: node.function,
           type: "custom",
@@ -97,29 +117,94 @@ export default function FlowChart() {
           },
         });
 
-        node.children.forEach((child, childIndex) => {
+        let childStartY = startY;
+        node.children.forEach((child) => {
           newEdges.push({
             id: `${node.function}-${child.function}`,
             source: node.function,
             target: child.function,
-            type: "smoothstep",
+            type: "step",
             markerEnd: {
               type: MarkerType.Arrow,
             },
             style: { stroke: "#7C7C7C", strokeWidth: 3 },
           });
-          processNode(child, level + 1, childIndex, node.children.length);
+          const childHeight = processNode(child, level + 1, childStartY);
+          childStartY += childHeight + verticalSpacing;
         });
+
+        return totalHeight;
       };
 
-      graphData.forEach((rootNode, index) => {
-        processNode(rootNode, 0, index, graphData.length);
+      let startY = 0;
+      graphData.forEach((rootNode) => {
+        const rootHeight = processNode(rootNode, 0, startY);
+        startY += rootHeight + verticalSpacing;
       });
 
       setNodes(newNodes);
       setEdges(newEdges);
     }
   }, [graphData, setNodes, setEdges]);
+
+  //     const processNode = (
+  //       node: GraphNode,
+  //       level: number,
+  //       index: number,
+  //       totalSiblings: number
+
+  //       // parentY: number, //new
+  //       // siblingsHeight: number //new
+  //     ) => {
+  //       const x = level * (levelWidth + nodeWidth);
+  //       const y = (index - (totalSiblings - 1) / 2) * nodeHeight * 2;
+  //       // const y = parentY + siblingsHeight / 2 + index * (nodeHeight + siblingGap);
+  //       newNodes.push({
+  //         id: node.function,
+  //         type: "custom",
+  //         position: { x, y },
+  //         data: {
+  //           label: node.function,
+  //           dependentLibs: node.params
+  //             .map((p) => p.type)
+  //             .filter((t): t is string => t !== null),
+  //           params: node.params.map((p) => p.identifier),
+  //           responseObject: node.response_object,
+  //         },
+  //       });
+
+  //       const totalChildrenHeight = calculateTotalHeight(node); // new
+
+  //       node.children.forEach((child, childIndex) => {
+  //         newEdges.push({
+  //           id: `${node.function}-${child.function}`,
+  //           source: node.function,
+  //           target: child.function,
+  //           type: "step",
+  //           markerEnd: {
+  //             type: MarkerType.Arrow,
+  //           },
+  //           style: { stroke: "#7C7C7C", strokeWidth: 3 },
+  //         });
+  //         processNode(child, level + 1, childIndex, node.children.length);
+  //         // processNode(child, level + 1, childIndex, y - totalChildrenHeight / 2, totalChildrenHeight); //new
+  //       });
+  //     };
+
+  //     const rootX = 0; // Root nodes start at level 0
+  //     const canvasHeight = 100; // Assume a canvas height of 800px for centering
+  //     const rootY = canvasHeight / 2; // Center root nodes vertically
+
+  //     graphData.forEach((rootNode, index) => {
+  //       processNode(rootNode, 0, index, graphData.length);
+  //       //   const rootTotalHeight = calculateTotalHeight(rootNode);
+  //       // processNode(rootNode, rootX, index, rootY, rootTotalHeight);
+  //     });
+
+  //     setNodes(newNodes);
+  //     setEdges(newEdges);
+  //   }
+  // }, [graphData, setNodes, setEdges]);
 
   const proOptions = { hideAttribution: true };
 

@@ -19,7 +19,18 @@ const extractFunName = (path: string) => {
 };
 const CustomNode = ({ data }: { data: NodeData }) => (
   <div className="bg-[#181E25] rounded-md border border-[#FFAD62] w-96 min-h-44 ">
-    <Handle type="source" position={Position.Right} />
+    <Handle
+      type="source"
+      position={Position.Right}
+      style={{
+        background: "#FFAD62",
+        minHeight: 0,
+        minWidth: 0,
+        border: "none",
+        height: 0,
+        width: 0,
+      }}
+    />
     <div className="px-4 py-1 flex justify-between">
       <span>{extractFunName(data.label)}</span>
       <img src="/Group 23.svg" />
@@ -42,7 +53,18 @@ const CustomNode = ({ data }: { data: NodeData }) => (
         </div>
       </div>
     </div>
-    <Handle type="target" position={Position.Left} />
+    <Handle
+      type="target"
+      position={Position.Left}
+      style={{
+        background: "#FFAD62",
+        minHeight: 0,
+        minWidth: 0,
+        border: "none",
+        height: 0,
+        width: 0,
+      }}
+    />
   </div>
 );
 
