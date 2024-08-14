@@ -235,8 +235,10 @@ export default function FlowChart() {
             <BtnComp />
           </Panel>
           <Background
-            gap={50}
-            color="#181E25"
+            gap={55}
+            style={{ opacity: 0.1 }}
+            // color="#181E25"
+            color="#FFAD62"
             variant={BackgroundVariant.Lines}
           />
         </ReactFlow>
