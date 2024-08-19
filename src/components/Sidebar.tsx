@@ -74,7 +74,7 @@ export default function Sidebar({
 
   return (
     <div className="flex flex-col">
-      <div className="w-96 bg-[#363636]  p-4 overflow-y-auto py-16">
+      <div className="w-96 bg-[#363636] h-full  p-4 overflow-y-auto py-16">
         <h2 className="text-xl font-semibold mb-4">cart_campaign</h2>
         <div className="mb-4">
           <div className="flex items-center">
